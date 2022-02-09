@@ -59,7 +59,6 @@ namespace Blog.Controllers
         {
             if (ModelState.IsValid)
             {
-                //Specify DateTime Kind
                 blogItem.Created = DateTime.UtcNow;
 
                 _context.Add(blogItem);

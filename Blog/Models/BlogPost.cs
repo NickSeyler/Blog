@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Blog.Enum;
+using System.ComponentModel.DataAnnotations;
 
 namespace Blog.Models
 {
@@ -6,6 +7,7 @@ namespace Blog.Models
     {
         public int Id { get; set; }
 
+        [Display(Name = "Blog Id")]
         //Foreign Key
         public int BlogItemId { get; set; }
 
@@ -13,9 +15,17 @@ namespace Blog.Models
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at most {1} characters long.", MinimumLength = 2)]
         public string Title { get; set; } = "";
 
+        public string Slug { get; set; } = "";
+
+        [Display(Name = "Mark for Deletion")]
+        public bool IsDeleted { get; set; }
+
         [Required]
         [StringLength(300, ErrorMessage = "The {0} must be at least {2} and at most {1} characters long.", MinimumLength = 2)]
         public string Abstract { get; set; } = "";
+
+        [Display(Name = "Post State")]
+        public BlogPostState BlogPostState { get; set; }
 
         [Required]
         //[StringLength(100, ErrorMessage = "The {0} must be at least {2} and at most {1} characters long.", MinimumLength = 2)]
@@ -24,7 +34,8 @@ namespace Blog.Models
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
+        [Display(Name = "Blog")]
         //Navigation Properties
-        public BlogItem BlogItem { get; set; } = default!;
+        public BlogItem? BlogItem { get; set; }
     }
 }

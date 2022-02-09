@@ -13,12 +13,25 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="BlogItemId" />
-            <input type="hidden" asp-for="Created" />
+            <div class="form-group">
+                <label asp-for="BlogItemId" class="control-label"></label>
+                <select asp-for="BlogItemId" class="form-control" asp-items="ViewBag.BlogItemId"></select>
+                <span asp-validation-for="BlogItemId" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Slug" class="control-label"></label>
+                <input asp-for="Slug" class="form-control" />
+                <span asp-validation-for="Slug" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
+                </label>
             </div>
             <div class="form-group">
                 <label asp-for="Abstract" class="control-label"></label>
@@ -26,9 +39,24 @@
                 <span asp-validation-for="Abstract" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="BlogPostState" class="control-label"></label>
+                <select asp-for="BlogPostState" class="form-control"></select>
+                <span asp-validation-for="BlogPostState" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Body" class="control-label"></label>
                 <input asp-for="Body" class="form-control" />
                 <span asp-validation-for="Body" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Created" class="control-label"></label>
+                <input asp-for="Created" class="form-control" />
+                <span asp-validation-for="Created" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Updated" class="control-label"></label>
+                <input asp-for="Updated" class="form-control" />
+                <span asp-validation-for="Updated" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
