@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Blog.Data;
 using Blog.Models;
+using Blog.Services.Interfaces;
 
 namespace Blog.Controllers
 {
     public class BlogItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IImageService _imageService;
 
         public BlogItemsController(ApplicationDbContext context)
         {
@@ -55,8 +57,14 @@ namespace Blog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BlogName,Description")] BlogItem blogItem)
+        public async Task<IActionResult> Create([Bind("BlogName,Description")] BlogItem blogItem, IFormFile imageFile)
         {
+            if(imageFile != null)
+            {
+                blogItem.ImageData = await _imageService.ConvertFileToByteArrayAsync(imageFile);
+                blogItem.ImageType = imageFile.ContentType;
+            }
+
             if (ModelState.IsValid)
             {
                 blogItem.Created = DateTime.UtcNow;

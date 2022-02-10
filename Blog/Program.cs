@@ -1,6 +1,7 @@
 using Blog.Data;
 using Blog.Models;
 using Blog.Services;
+using Blog.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,7 @@ builder.Services.AddIdentity<BlogUser, IdentityRole>(options => options.SignIn.R
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<DataService>();
+builder.Services.AddScoped<IImageService, BasicImageService>();
 
 var app = builder.Build();
 

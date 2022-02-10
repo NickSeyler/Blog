@@ -20,6 +20,11 @@ namespace Blog.Models
 
         public DateTime? Updated { get; set; }
 
+        //Image storage
+        [Display(Name = "Choose Image")]
+        public byte[] ImageData { get; set; } = Array.Empty<byte>();
+        public string ImageType { get; set; } = "";
+
         //List of Posts
         public ICollection<BlogPost> BlogPosts { get; set; } = new HashSet<BlogPost>();
     }
