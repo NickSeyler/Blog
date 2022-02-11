@@ -1,17 +1,28 @@
 ﻿@model IEnumerable<Blog.Models.BlogItem>
 
+@using Blog.Services.Interfaces
+@inject IImageService _imageService
+
+
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
 
+@if (User.IsInRole("Administrator"))
+{
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+}
+
 <table class="table">
     <thead>
         <tr>
+            <th>
+                Image
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.BlogName)
             </th>
@@ -28,8 +39,12 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
+            <td>
+                <img class="img-fluid" src="@_imageService.ConvertByteArrayToFile(item.ImageData, item.ImageType)"/>
+            </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.BlogName)
             </td>
@@ -43,9 +58,12 @@
                 @Html.DisplayFor(modelItem => item.Updated)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            @if (User.IsInRole("Administrator"))
+            {
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> <span>|</span>
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> <span>|</span>
+            }
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
             </td>
         </tr>
 }

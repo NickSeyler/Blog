@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Blog.Data;
 using Blog.Models;
 using Blog.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Blog.Services;
 
 namespace Blog.Controllers
 {
@@ -17,9 +19,11 @@ namespace Blog.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IImageService _imageService;
 
-        public BlogItemsController(ApplicationDbContext context)
+        public BlogItemsController(ApplicationDbContext context,
+                                   IImageService imageService)
         {
             _context = context;
+            _imageService = imageService;
         }
 
         // GET: BlogItems
@@ -47,6 +51,7 @@ namespace Blog.Controllers
         }
 
         // GET: BlogItems/Create
+        [Authorize(Roles="Administrator")]
         public IActionResult Create()
         {
             return View();
@@ -59,14 +64,14 @@ namespace Blog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BlogName,Description")] BlogItem blogItem, IFormFile imageFile)
         {
-            if(imageFile != null)
-            {
-                blogItem.ImageData = await _imageService.ConvertFileToByteArrayAsync(imageFile);
-                blogItem.ImageType = imageFile.ContentType;
-            }
-
             if (ModelState.IsValid)
             {
+                if (imageFile != null)
+                {
+                    blogItem.ImageData = await _imageService.ConvertFileToByteArrayAsync(imageFile);
+                    blogItem.ImageType = imageFile.ContentType;
+                }
+
                 blogItem.Created = DateTime.UtcNow;
 
                 _context.Add(blogItem);
@@ -77,6 +82,7 @@ namespace Blog.Controllers
         }
 
         // GET: BlogItems/Edit/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -131,6 +137,7 @@ namespace Blog.Controllers
         }
 
         // GET: BlogItems/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

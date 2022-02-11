@@ -25,6 +25,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<DataService>();
 builder.Services.AddScoped<IImageService, BasicImageService>();
+builder.Services.AddTransient<SlugService>();
 
 var app = builder.Build();
 
@@ -57,8 +58,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "custom",
+    pattern: "PostDetails/{slug}",
+    defaults: new {controller = "BlogPosts", action="Details"});
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 app.Run();

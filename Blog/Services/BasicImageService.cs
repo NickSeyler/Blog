@@ -7,7 +7,7 @@
             try
             {
                 using MemoryStream memoryStream = new();
-                await memoryStream.CopyToAsync(memoryStream);
+                await file.CopyToAsync(memoryStream);
                 byte[] byteFile = memoryStream.ToArray();
                 return byteFile;
             }

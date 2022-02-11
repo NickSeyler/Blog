@@ -8,16 +8,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Blog.Data;
 using Blog.Models;
+using Microsoft.AspNetCore.Authorization;
+using Blog.Services.Interfaces;
+using Blog.Services;
 
 namespace Blog.Controllers
 {
     public class BlogPostsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IImageService _imageService;
+        private readonly SlugService _slugService;
 
-        public BlogPostsController(ApplicationDbContext context)
+        public BlogPostsController(ApplicationDbContext context,
+                                   IImageService imageService, 
+                                   SlugService slugService)
         {
             _context = context;
+            _imageService = imageService;
+            _slugService = slugService;
         }
 
         // GET: BlogPosts
@@ -28,16 +37,17 @@ namespace Blog.Controllers
         }
 
         // GET: BlogPosts/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string slug)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(slug))
             {
                 return NotFound();
             }
 
             var blogPost = await _context.BlogPosts
                 .Include(b => b.BlogItem)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Slug == slug);
+
             if (blogPost == null)
             {
                 return NotFound();
@@ -47,6 +57,7 @@ namespace Blog.Controllers
         }
 
         // GET: BlogPosts/Create
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             ViewData["BlogItemId"] = new SelectList(_context.BlogItems, "Id", "BlogName");
@@ -62,7 +73,19 @@ namespace Blog.Controllers
         {
             if (ModelState.IsValid)
             {
-                blogPost.Slug = blogPost.Title.ToUpper();
+                var slug = _slugService.UrlFriendly(blogPost.Title);
+                var isUnique = !_context.BlogPosts.Any(b => b.Slug == slug);
+                if (isUnique)
+                {
+                    blogPost.Slug = slug;
+                }
+                else
+                {
+                    ModelState.AddModelError("Title", "This Title cannot be used (duplicate Slug).");
+                    ViewData["BlogItemId"] = new SelectList(_context.BlogItems, "Id", "BlogName", blogPost.BlogItemId);
+                    return View(blogPost);
+                }
+
                 blogPost.Created = DateTime.UtcNow;
 
                 _context.Add(blogPost);
@@ -74,6 +97,7 @@ namespace Blog.Controllers
         }
 
         // GET: BlogPosts/Edit/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,7 +119,7 @@ namespace Blog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogItemId,Title,IsDeleted,Abstract,BlogPostState,Body,Created")] BlogPost blogPost)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogItemId,Title,Slug,IsDeleted,Abstract,BlogPostState,Body,Created")] BlogPost blogPost)
         {
             if (id != blogPost.Id)
             {
@@ -106,7 +130,21 @@ namespace Blog.Controllers
             {
                 try
                 {
-                    blogPost.Slug = blogPost.Title.ToUpper();
+                    var slug = _slugService.UrlFriendly(blogPost.Title);
+
+                    var isUnique = !_context.BlogPosts.Any(b => b.Slug == slug);
+
+                    if (isUnique || blogPost.Slug == slug)
+                    {
+                        blogPost.Slug = slug;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Title", "This Title cannot be used (duplicate Slug).");
+                        ViewData["BlogItemId"] = new SelectList(_context.BlogItems, "Id", "BlogName", blogPost.BlogItemId);
+                        return View(blogPost);
+                    }
+
                     blogPost.Created = DateTime.SpecifyKind(blogPost.Created, DateTimeKind.Utc);
                     blogPost.Updated = DateTime.UtcNow;
 
@@ -131,6 +169,7 @@ namespace Blog.Controllers
         }
 
         // GET: BlogPosts/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
