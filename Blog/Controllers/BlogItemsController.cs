@@ -51,7 +51,7 @@ namespace Blog.Controllers
         }
 
         // GET: BlogItems/Create
-        [Authorize(Roles="Administrator")]
+        
         public IActionResult Create()
         {
             return View();
