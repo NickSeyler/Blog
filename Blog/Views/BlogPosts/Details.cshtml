@@ -66,6 +66,23 @@
         </dd>
     </dl>
 </div>
+
+<hr />
+
+@if(User.Identity!.IsAuthenticated)
+{
+    <form asp-controller="Comments" asp-action="Create">
+        <input type="hidden" name="BlogPostId" value=@Model.Id/>
+        <input type="hidden" asp-for="Slug"/>
+        <textarea class="form-control" name="CommentBody" rows="3" placeholder="Add Comment"></textarea>
+        <button class="btn">Submit</button>
+    </form>
+}
+else
+{
+    <a asp-area="Identity" asp-page="/Account/Login">Please log in to leave a comment.</a>
+}
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

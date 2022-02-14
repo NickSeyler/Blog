@@ -37,5 +37,8 @@ namespace Blog.Models
         [Display(Name = "Blog")]
         //Navigation Properties
         public BlogItem? BlogItem { get; set; }
+
+
+        public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
     }
 }
