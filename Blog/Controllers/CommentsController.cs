@@ -66,7 +66,7 @@ namespace Blog.Controllers
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction("Details", "BlogPosts", new { slug });
+            return RedirectToAction("Details", "BlogPosts", new { slug },"CommentBox");
         }
 
         // GET: Comments/Edit/5

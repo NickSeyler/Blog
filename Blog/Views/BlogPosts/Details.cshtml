@@ -69,19 +69,43 @@
 
 <hr />
 
+
 @if(User.Identity!.IsAuthenticated)
 {
-    <form asp-controller="Comments" asp-action="Create">
-        <input type="hidden" name="BlogPostId" value=@Model.Id/>
-        <input type="hidden" asp-for="Slug"/>
-        <textarea class="form-control" name="CommentBody" rows="3" placeholder="Add Comment"></textarea>
-        <button class="btn">Submit</button>
-    </form>
+    <div class="col col-md-8" id="CommentBox">
+        <form asp-controller="Comments" asp-action="Create">
+            <input type="hidden" name="BlogPostId" value=@Model.Id />
+            <input type="hidden" asp-for="Slug" />
+            <textarea class="form-control" name="CommentBody" rows="3" placeholder="Add Comment"></textarea>
+            <button class="btn">Submit</button>
+        </form>
+    </div>
 }
+
 else
 {
-    <a asp-area="Identity" asp-page="/Account/Login">Please log in to leave a comment.</a>
+    <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Details", "BlogPosts", new { slug = Model.Slug})">Please log in to leave a comment.</a>
 }
+
+<hr />
+
+<div class="row">
+@foreach(var comment in Model.Comments.OrderByDescending(c => c.CreatedDate))
+{
+    <div class="col-12 my-2">
+        <div class="card border-dark mb-3 w-100">
+          <div class="card-header">
+              <span class="float-start">@comment.Author?.FullName</span>
+              <span class="float-end">@comment.CreatedDate.ToString("MMM dd, yyyy")</span>
+          </div>
+          <div class="card-body text-dark">
+            <h5 class="card-title">@comment.CommentBody</h5>
+          </div>
+        </div>
+    </div>
+}
+</div>
+
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |

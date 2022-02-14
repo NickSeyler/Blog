@@ -46,6 +46,8 @@ namespace Blog.Controllers
 
             var blogPost = await _context.BlogPosts
                 .Include(b => b.BlogItem)
+                .Include(c => c.Comments)
+                .ThenInclude(c => c.Author)
                 .FirstOrDefaultAsync(m => m.Slug == slug);
 
             if (blogPost == null)
