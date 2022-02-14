@@ -20,7 +20,7 @@ namespace Blog.Services
             _userManager = userManager;
         }
 
-        public async Task SetupDBAsync()
+        public async Task SetupDbAsync()
         {
             //Run the Migrations async
             await _context.Database.MigrateAsync();
@@ -30,7 +30,7 @@ namespace Blog.Services
 
             await SeedUsersAsync();
             
-        }
+         }
 
         private async Task SeedRolesAsync()
         {
@@ -43,20 +43,20 @@ namespace Blog.Services
 
         private async Task SeedUsersAsync()
         {
-            BlogUser adminUser = new()
-            {
-                UserName = "admin@example.com",
-                Email = "admin@example.com",
-                FirstName = "Nick",
-                LastName = "Seyler",
-                DisplayName = "Nick Seyler",
-                PhoneNumber = "555 555 5555",
-                EmailConfirmed = true
-            };
-
             try
             {
-                if (await _userManager.FindByEmailAsync(adminUser.Email) != null)
+                BlogUser adminUser = new()
+                {
+                    UserName = "admin@example.com",
+                    Email = "admin@example.com",
+                    FirstName = "Nick",
+                    LastName = "Seyler",
+                    DisplayName = "Nick Seyler",
+                    PhoneNumber = "555 555 5555",
+                    EmailConfirmed = true
+                };
+
+                if (await _userManager.FindByEmailAsync(adminUser.Email) == null)
                 {
                     await _userManager.CreateAsync(adminUser, "AdminBlogPassword1*");
                     await _userManager.AddToRoleAsync(adminUser, "Administrator");
@@ -80,7 +80,7 @@ namespace Blog.Services
 
             try
             {
-                if (await _userManager.FindByEmailAsync(modUser.Email) != null)
+                if (await _userManager.FindByEmailAsync(modUser.Email) == null)
                 {
                     await _userManager.CreateAsync(modUser, "ModBlogPassword1*");
                     await _userManager.AddToRoleAsync(modUser, "Moderator");

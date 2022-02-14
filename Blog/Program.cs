@@ -33,7 +33,7 @@ var app = builder.Build();
 //When calling a service from this middleware, we need an instance of IServiceScope
 var scope = app.Services.CreateScope();
 var dataService = scope.ServiceProvider.GetRequiredService<DataService>();
-await dataService.SetupDBAsync();
+await dataService.SetupDbAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

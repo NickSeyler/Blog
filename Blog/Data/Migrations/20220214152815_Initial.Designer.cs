@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Blog.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220208171753_Initial")]
+    [Migration("20220214152815_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,14 @@ namespace Blog.Data.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
 
+                    b.Property<byte[]>("ImageData")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("ImageType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("Updated")
                         .HasColumnType("timestamp with time zone");
 
@@ -69,12 +77,22 @@ namespace Blog.Data.Migrations
                     b.Property<int>("BlogItemId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("BlogPostState")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Body")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
