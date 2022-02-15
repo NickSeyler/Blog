@@ -29,6 +29,14 @@ namespace Blog.Controllers
             _slugService = slugService;
         }
 
+        public async Task<IActionResult> BlogChildIndex(int blogItemId)
+        {
+            var children = await _context.BlogPosts.Include(b => b.BlogItem)
+                                                   .Where(b => b.BlogItemId == blogItemId)
+                                                   .ToListAsync();
+            return View("Index", children);
+        }
+
         // GET: BlogPosts
         public async Task<IActionResult> Index()
         {

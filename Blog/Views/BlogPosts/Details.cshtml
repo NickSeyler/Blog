@@ -1,5 +1,8 @@
 ﻿@model Blog.Models.BlogPost
 
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<BlogUser> _userManager
+
 @{
     ViewData["Title"] = "Details";
 }
@@ -89,18 +92,31 @@ else
 
 <hr />
 
-<div class="row">
+<div class="row" id="CommentSection">
 @foreach(var comment in Model.Comments.OrderByDescending(c => c.CreatedDate))
 {
     <div class="col-12 my-2">
         <div class="card border-dark mb-3 w-100">
-          <div class="card-header">
-              <span class="float-start">@comment.Author?.FullName</span>
-              <span class="float-end">@comment.CreatedDate.ToString("MMM dd, yyyy")</span>
-          </div>
-          <div class="card-body text-dark">
-            <h5 class="card-title">@comment.CommentBody</h5>
-          </div>
+            <div class="card-header">
+                <span class="float-start">@comment.Author?.FullName</span>
+                <span class="float-end">@comment.CreatedDate.ToString("MMM dd, yyyy")</span>
+            </div>
+            <div class="card-body text-dark">
+                <h5 class="card-title">@comment.CommentBody</h5>
+            </div>
+            @if(comment.AuthorId == _userManager.GetUserId(User))
+            {
+            <div class="card-footer"> 
+                <div class="row">
+                    <div class="col col-md-2">
+                        <button class="btnEditComment btn btn-sm btn-dark w-100" data-commentId=@comment.Id data-bs-toggle="modal" data-bs-target="#editCommentModal">Edit</button>
+                    </div>
+                    <div class="col col-md-2"> 
+                        <a asp-action="Delete" asp-controller="Comments" asp-route-id="@comment.Id" class="btn btn-sm btn-dark w-100">Delete</a>
+                    </div>
+                </div>
+            </div>
+            }
         </div>
     </div>
 }
@@ -111,3 +127,46 @@ else
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+<!-- Modals -->
+<div class="modal fade" id="editCommentModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Edit" asp-controller="Comments">
+                    <input type="hidden" name="Id" id="modalCommentId" />
+                    <input type="hidden" asp-for="Slug" />
+
+                    <div class="form-group">
+                        <label class="form-label">Comment</label>
+                        <textarea class="form-control" name="commentBody" id="modalCommentBody" rows="5"></textarea>
+                    </div>
+                    <button class="btn btn-sm btn-dark w-100">Save</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+<script>
+    document.querySelectorAll("button.btnEditComment").forEach(btn => {
+        btn.addEventListener("click", function(){
+
+
+            document.getElementById('modalCommentId').value = this.getAttribute('data-commentId');
+            
+            let parent = this.closest(".card");
+            let child = parent.querySelector(".card-title");
+            document.getElementById('modalCommentBody').innerText = child.innerText;
+        });
+    });
+</script>
+}
