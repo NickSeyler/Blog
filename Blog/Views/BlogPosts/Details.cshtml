@@ -112,7 +112,7 @@ else
                         <button class="btnEditComment btn btn-sm btn-dark w-100" data-commentId=@comment.Id data-bs-toggle="modal" data-bs-target="#editCommentModal">Edit</button>
                     </div>
                     <div class="col col-md-2"> 
-                        <a asp-action="Delete" asp-controller="Comments" asp-route-id="@comment.Id" class="btn btn-sm btn-dark w-100">Delete</a>
+                        <button class="btnDeleteComment btn btn-sm btn-dark w-100" data-commentId=@comment.Id>Delete</button>
                     </div>
                 </div>
             </div>
@@ -166,6 +166,36 @@ else
             let parent = this.closest(".card");
             let child = parent.querySelector(".card-title");
             document.getElementById('modalCommentBody').innerText = child.innerText;
+        });
+    });
+</script>
+
+
+<script>
+    const CustomSwal = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-dark'
+      },
+      buttonsStyling: false
+    })
+
+
+    document.querySelectorAll("button.btnDeleteComment").forEach(btn => {
+        btn.addEventListener("click", function(){
+
+            CustomSwal.fire({
+                title: 'Are you sure?',
+                html: '<div>You cannot revert this action!</div>' +
+                      '<form asp-action="Delete" asp-controller="Comments">'+
+                          '<input type="hidden" name="Id" id="??????????????????????????????" />' +
+                          '<input type="hidden" asp-for="Slug" />' +
+                          '<button class="btn btn-sm btn-danger w-50 my-2">Delete</button>' +
+                      '</form>',
+                icon: 'warning',
+                showConfirmButton: false,
+                showCancelButton: true,
+            })
         });
     });
 </script>
