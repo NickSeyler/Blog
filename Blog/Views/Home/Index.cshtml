@@ -2,7 +2,43 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Page Header-->
+<header class="masthead" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading">
+                    <h1>Clean Blog</h1>
+                    <span class="subheading">A Blog Theme by Start Bootstrap</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content-->
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <!-- Post preview-->
+
+            @foreach(var blog in Model)
+            {                
+                <div class="post-preview">
+                    <a asp-action="BlogChildIndex" asp-controller="BlogPosts" asp-route-blogId="@blog.Id">
+                        <h2 class="post-title">@blog.BlogName</h2>
+                        <h3 class="post-subtitle">@blog.Description</h3>
+                    </a>
+                    <p class="post-meta">
+                        Created By Nick Seyler on @blog.Created.ToString("MMM dd, yyyy")
+                    </p>
+                </div>
+                <!-- Divider-->
+                <hr class="my-4" />
+            }
+
+            <!-- Pager-->
+            <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+        </div>
+    </div>
 </div>

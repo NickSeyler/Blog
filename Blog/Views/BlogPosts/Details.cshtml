@@ -99,7 +99,14 @@ else
         <div class="card border-dark mb-3 w-100">
             <div class="card-header">
                 <span class="float-start">@comment.Author?.FullName</span>
+                @if(@comment.UpdatedDate != null)
+                {
+                <span class="float-end">Edited on @comment.UpdatedDate</span>
+                }
+                else
+                {
                 <span class="float-end">@comment.CreatedDate.ToString("MMM dd, yyyy")</span>
+                }
             </div>
             <div class="card-body text-dark">
                 <h5 class="card-title">@comment.CommentBody</h5>
@@ -155,11 +162,22 @@ else
     </div>
 </div>
 
+
+<!-- Templates -->
+<template>
+    <div>You cannot revert this action!</div>
+    <form asp-action="Delete" asp-controller="Comments">
+        <input type="hidden" name="Id" id="templateId" />
+        <input type="hidden" asp-for="Slug" /> 
+        <button class="btn btn-sm btn-danger w-50 my-2">Delete</button>
+    </form>
+</template>
+
+
 @section Scripts{
 <script>
     document.querySelectorAll("button.btnEditComment").forEach(btn => {
         btn.addEventListener("click", function(){
-
 
             document.getElementById('modalCommentId').value = this.getAttribute('data-commentId');
             
@@ -173,25 +191,23 @@ else
 
 <script>
     const CustomSwal = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-dark'
-      },
-      buttonsStyling: false
-    })
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-dark'
+            },
+            buttonsStyling: false
+        })
 
 
     document.querySelectorAll("button.btnDeleteComment").forEach(btn => {
         btn.addEventListener("click", function(){
+            var commentId = this.getAttribute('data-commentId');
+            
+            var customHtml = document.getElementsByTagName("template")[0].content.cloneNode(true);
 
             CustomSwal.fire({
                 title: 'Are you sure?',
-                html: '<div>You cannot revert this action!</div>' +
-                      '<form asp-action="Delete" asp-controller="Comments">'+
-                          '<input type="hidden" name="Id" id="??????????????????????????????" />' +
-                          '<input type="hidden" asp-for="Slug" />' +
-                          '<button class="btn btn-sm btn-danger w-50 my-2">Delete</button>' +
-                      '</form>',
+                html: customHtml,
                 icon: 'warning',
                 showConfirmButton: false,
                 showCancelButton: true,
