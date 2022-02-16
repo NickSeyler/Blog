@@ -1,4 +1,5 @@
-﻿@model Blog.Models.BlogPost
+﻿
+@model Blog.Models.BlogPost
 
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<BlogUser> _userManager
@@ -162,16 +163,10 @@ else
     </div>
 </div>
 
+<form name="formDeleteComment" asp-action="Delete" asp-controller="Comments">
+    <input type="hidden" name="Id" id="deleteCommentId" />
+</form>
 
-<!-- Templates -->
-<template>
-    <div>You cannot revert this action!</div>
-    <form asp-action="Delete" asp-controller="Comments">
-        <input type="hidden" name="Id" id="templateId" />
-        <input type="hidden" asp-for="Slug" /> 
-        <button class="btn btn-sm btn-danger w-50 my-2">Delete</button>
-    </form>
-</template>
 
 
 @section Scripts{
@@ -190,29 +185,36 @@ else
 
 
 <script>
-    const CustomSwal = Swal.mixin({
-        customClass: {
-            confirmButton: 'btn btn-danger',
-            cancelButton: 'btn btn-dark'
-            },
-            buttonsStyling: false
-        })
-
-
     document.querySelectorAll("button.btnDeleteComment").forEach(btn => {
         btn.addEventListener("click", function(){
-            var commentId = this.getAttribute('data-commentId');
-            
-            var customHtml = document.getElementsByTagName("template")[0].content.cloneNode(true);
+            document.getElementById("deleteCommentId").value = this.getAttribute('data-commentId');
+            DeleteComment();
 
-            CustomSwal.fire({
-                title: 'Are you sure?',
-                html: customHtml,
-                icon: 'warning',
-                showConfirmButton: false,
-                showCancelButton: true,
-            })
-        });
+            function DeleteComment(){
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#aaaaaa',
+                    confirmButtonText: 'Delete this comment.'
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'Your comment has been deleted.',
+                            icon: 'success',
+                            showConfirmButton: false
+                        })
+
+                        setTimeout(function() {
+                            document.formDeleteComment.submit();
+                        }, 3000);
+                    }
+                })     
+            }
+        })
     });
 </script>
 }

@@ -59,4 +59,15 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/32.0.0/classic/ckeditor.js"></script>
+
+    <script>
+    ClassicEditor
+        .create( document.querySelector( '#Body' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+    </script>
+
 }

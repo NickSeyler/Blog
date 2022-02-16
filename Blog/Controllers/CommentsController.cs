@@ -132,12 +132,13 @@ namespace Blog.Controllers
         // POST: Comments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id, string slug)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var comment = await _context.Comment.FindAsync(id);
+            var comment = await _context.Comment.Include(c => c.BlogPost)
+                                                .FirstOrDefaultAsync(c=> c.Id == id);
             _context.Comment.Remove(comment);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Details", "BlogPosts", new { slug }, "CommentSection");
+            return RedirectToAction("Details", "BlogPosts", new { slug = comment.BlogPost.Slug}, "CommentSection");
         }
 
         private bool CommentExists(int id)
