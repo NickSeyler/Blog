@@ -17,7 +17,5 @@ namespace Blog.Models
                 return $"{LastName}, {FirstName}";
             }
         }
-
-        public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
     }
 }

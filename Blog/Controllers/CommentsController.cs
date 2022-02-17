@@ -109,6 +109,44 @@ namespace Blog.Controllers
 
         }
 
+        public async Task<IActionResult> Moderate(int id, [Bind("Id", "ModeratedBody", "ModerationReason")] Comment comment)
+        {
+            if (id != comment.Id)
+            {
+                return NotFound();
+            }
+
+            var commentSnapshot = await _context.Comment.Include(c => c.BlogPost)
+                                                        .FirstOrDefaultAsync(c => c.Id == comment.Id);
+
+            try
+            {
+                if (commentSnapshot == null)
+                {
+                    return NotFound();
+                }
+
+                commentSnapshot.ModeratedBody = comment.ModeratedBody;
+                commentSnapshot.ModerationReason = comment.ModerationReason;
+                commentSnapshot.ModeratedDate = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CommentExists(comment.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction("Details", "BlogPosts", new { slug = commentSnapshot.BlogPost.Slug }, "CommentSection");
+        }
+
         // GET: Comments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

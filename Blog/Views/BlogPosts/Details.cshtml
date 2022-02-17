@@ -1,6 +1,7 @@
 ﻿
 @model Blog.Models.BlogPost
 
+@using Blog.Enum
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<BlogUser> _userManager
 
@@ -100,31 +101,58 @@ else
         <div class="card border-dark mb-3 w-100">
             <div class="card-header">
                 <span class="float-start">@comment.Author?.FullName</span>
-                @if(@comment.UpdatedDate != null)
+                @if(@comment.ModeratedDate != null)
+                {
+                <span class="float-end text-danger">Moderated on @comment.ModeratedDate</span>
+                }
+                else if(@comment.UpdatedDate != null)
                 {
                 <span class="float-end">Edited on @comment.UpdatedDate</span>
                 }
                 else
                 {
-                <span class="float-end">@comment.CreatedDate.ToString("MMM dd, yyyy")</span>
+                <span class="float-end">@comment.CreatedDate</span>
                 }
             </div>
             <div class="card-body text-dark">
+                @if(comment.ModeratedDate == null)
+                {
                 <h5 class="card-title">@comment.CommentBody</h5>
+                }
+                else
+                {
+                <h6 class="text-danger fst-italic">Moderation Reason: @comment.ModerationReason</h6>
+                <h5 class="card-title">@comment.ModeratedBody <span class="fst-italic text-muted ms-2">(modified...)</span></h5>
+                }
             </div>
             @if(comment.AuthorId == _userManager.GetUserId(User))
             {
             <div class="card-footer"> 
                 <div class="row">
+                    @if(comment.ModeratedDate == null)
+                    {
                     <div class="col col-md-2">
                         <button class="btnEditComment btn btn-sm btn-dark w-100" data-commentId=@comment.Id data-bs-toggle="modal" data-bs-target="#editCommentModal">Edit</button>
                     </div>
+                    }
                     <div class="col col-md-2"> 
                         <button class="btnDeleteComment btn btn-sm btn-dark w-100" data-commentId=@comment.Id>Delete</button>
                     </div>
                 </div>
             </div>
             }
+
+            @if (User.IsInRole("Moderator"))
+            {
+            <div class="card-footer"> 
+                <div class="row">
+                    <div class="col col-md-2">
+                        <button class="btnModerateComment btn btn-sm btn-dark w-100" data-commentId=@comment.Id data-bs-toggle="modal" data-bs-target="#moderateCommentModal">Moderate</button>
+                    </div>
+                </div>
+            </div>
+            }
+
         </div>
     </div>
 }
@@ -136,12 +164,13 @@ else
     <a asp-action="Index">Back to List</a>
 </div>
 
-<!-- Modals -->
-<div class="modal fade" id="editCommentModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<!--Modals-->
+<!--Edit Modal-->
+<div class="modal fade" id="editCommentModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                <h5 class="modal-title" id="staticBackdropLabel1">Comment</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -154,6 +183,45 @@ else
                         <textarea class="form-control" name="commentBody" id="modalCommentBody" rows="5"></textarea>
                     </div>
                     <button class="btn btn-sm btn-dark w-100">Save</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Moderate Modal-->
+<div class="modal fade" id="moderateCommentModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel2">Moderating Comment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Moderate" asp-controller="Comments">
+                    <input type="hidden" name="Id" id="modalModerateCommentId" />
+
+                    <div class="form-group">
+                        <label class="control-label">Original Comment</label>
+                        <textarea id="modalModerateCommentBody" rows="10" class="form-control" readonly></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Moderated Comment</label>
+                        <textarea id="modalModerateCommentBody2" name="ModeratedBody" class="form-control" rows="10"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Reason</label>
+                        <select name="ModerationReason" asp-items="@Html.GetEnumSelectList<ModerationReason>()" ></select>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-sm btn-dark w-100">Save</button>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -179,6 +247,20 @@ else
             let parent = this.closest(".card");
             let child = parent.querySelector(".card-title");
             document.getElementById('modalCommentBody').innerText = child.innerText;
+        });
+    });
+</script>
+
+<script>
+    document.querySelectorAll("button.btnModerateComment").forEach(btn => {
+        btn.addEventListener("click", function(){
+
+            document.getElementById('modalModerateCommentId').value = this.getAttribute('data-commentId');
+            
+            let parent = this.closest(".card");
+            let child = parent.querySelector(".card-title");
+            document.getElementById('modalModerateCommentBody').innerText = child.innerText;
+            document.getElementById('modalModerateCommentBody2').innerText = child.innerText;
         });
     });
 </script>
