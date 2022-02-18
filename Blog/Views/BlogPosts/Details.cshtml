@@ -100,18 +100,26 @@ else
     <div class="col-12 my-2">
         <div class="card border-dark mb-3 w-100">
             <div class="card-header">
+                @if (comment.ModeratedDate == null)
+                {
                 <span class="float-start">@comment.Author?.FullName</span>
-                @if(@comment.ModeratedDate != null)
+                }
+                else
+                {
+                <span class="float-start text-danger">Moderated by @comment.Moderator?.FullName</span>
+                }
+
+                @if(comment.ModeratedDate != null)
                 {
                 <span class="float-end text-danger">Moderated on @comment.ModeratedDate</span>
                 }
-                else if(@comment.UpdatedDate != null)
+                else if(comment.UpdatedDate != null)
                 {
                 <span class="float-end">Edited on @comment.UpdatedDate</span>
                 }
                 else
                 {
-                <span class="float-end">@comment.CreatedDate</span>
+                <span class="float-end">Created on @comment.CreatedDate</span>
                 }
             </div>
             <div class="card-body text-dark">
@@ -134,10 +142,10 @@ else
                     <div class="col col-md-2">
                         <button class="btnEditComment btn btn-sm btn-dark w-100" data-commentId=@comment.Id data-bs-toggle="modal" data-bs-target="#editCommentModal">Edit</button>
                     </div>
-                    }
                     <div class="col col-md-2"> 
                         <button class="btnDeleteComment btn btn-sm btn-dark w-100" data-commentId=@comment.Id>Delete</button>
                     </div>
+                    }
                 </div>
             </div>
             }
@@ -146,7 +154,7 @@ else
             {
             <div class="card-footer"> 
                 <div class="row">
-                    <div class="col col-md-2">
+                    <div class="col col-md-4">
                         <button class="btnModerateComment btn btn-sm btn-dark w-100" data-commentId=@comment.Id data-bs-toggle="modal" data-bs-target="#moderateCommentModal">Moderate</button>
                     </div>
                 </div>

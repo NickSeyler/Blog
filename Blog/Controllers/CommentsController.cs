@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Blog.Data;
 using Blog.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Blog.Controllers
 {
@@ -24,32 +25,6 @@ namespace Blog.Controllers
             _userManager = userManager;
         }
 
-        // GET: Comments
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Comment.Include(c => c.Author).Include(c => c.BlogPost);
-            return View(await applicationDbContext.ToListAsync());
-        }
-
-        // GET: Comments/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var comment = await _context.Comment
-                .Include(c => c.Author)
-                .Include(c => c.BlogPost)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (comment == null)
-            {
-                return NotFound();
-            }
-
-            return View(comment);
-        }
 
         // POST: Comments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -109,6 +84,7 @@ namespace Blog.Controllers
 
         }
 
+        [Authorize(Roles = "Moderator")]
         public async Task<IActionResult> Moderate(int id, [Bind("Id", "ModeratedBody", "ModerationReason")] Comment comment)
         {
             if (id != comment.Id)
@@ -125,7 +101,7 @@ namespace Blog.Controllers
                 {
                     return NotFound();
                 }
-
+                commentSnapshot.ModeratorId = _userManager.GetUserId(User);
                 commentSnapshot.ModeratedBody = comment.ModeratedBody;
                 commentSnapshot.ModerationReason = comment.ModerationReason;
                 commentSnapshot.ModeratedDate = DateTime.UtcNow;
@@ -145,26 +121,6 @@ namespace Blog.Controllers
             }
 
             return RedirectToAction("Details", "BlogPosts", new { slug = commentSnapshot.BlogPost.Slug }, "CommentSection");
-        }
-
-        // GET: Comments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var comment = await _context.Comment
-                .Include(c => c.Author)
-                .Include(c => c.BlogPost)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (comment == null)
-            {
-                return NotFound();
-            }
-
-            return View(comment);
         }
 
         // POST: Comments/Delete/5

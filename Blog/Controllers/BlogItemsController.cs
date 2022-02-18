@@ -51,7 +51,7 @@ namespace Blog.Controllers
         }
 
         // GET: BlogItems/Create
-        
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             return View();
@@ -61,6 +61,7 @@ namespace Blog.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BlogName,Description")] BlogItem blogItem, IFormFile imageFile)
         {
@@ -102,6 +103,7 @@ namespace Blog.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,BlogName,Description,Created")] BlogItem blogItem)
         {
@@ -157,6 +159,7 @@ namespace Blog.Controllers
 
         // POST: BlogItems/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
