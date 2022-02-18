@@ -2,6 +2,7 @@
 using Blog.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using X.PagedList;
 
 namespace Blog.Controllers
 {
@@ -16,9 +17,12 @@ namespace Blog.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int? pageNum)
         {
-            var blogs = _context.BlogItems.ToList();
+            pageNum ??= 1;
+            var blogs = await _context.BlogItems.OrderByDescending(b => b.Created)
+                                                .ToPagedListAsync((int)pageNum, 4);
+
             return View(blogs);
         }
 

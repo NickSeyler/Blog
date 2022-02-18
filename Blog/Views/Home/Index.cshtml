@@ -1,5 +1,11 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using Blog.Models
+@using X.PagedList.Web.Common
+@model IPagedList<BlogItem>
+
+@{
+    ViewData["Title"] = "Nick Seyler's Blog Site";
 }
 
 <!-- Page Header-->
@@ -40,5 +46,22 @@
             <!-- Pager-->
             <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
         </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col h3">
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        @Html.PagedListPager(Model, pageNum => Url.Action("Index", new { pageNum }),
+            new PagedListRenderOptions
+            {
+                LiElementClasses = new string[] {"page Item"},
+                PageClasses = new string[] {"page-link"}
+            })
     </div>
 </div>
