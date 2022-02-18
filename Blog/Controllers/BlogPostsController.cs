@@ -11,6 +11,7 @@ using Blog.Models;
 using Microsoft.AspNetCore.Authorization;
 using Blog.Services.Interfaces;
 using Blog.Services;
+using X.PagedList;
 
 namespace Blog.Controllers
 {
@@ -19,14 +20,17 @@ namespace Blog.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IImageService _imageService;
         private readonly SlugService _slugService;
+        private readonly SearchService _searchService;
 
         public BlogPostsController(ApplicationDbContext context,
-                                   IImageService imageService, 
-                                   SlugService slugService)
+                                   IImageService imageService,
+                                   SlugService slugService, 
+                                   SearchService searchService)
         {
             _context = context;
             _imageService = imageService;
             _slugService = slugService;
+            _searchService = searchService;
         }
 
         public async Task<IActionResult> BlogChildIndex(int blogItemId)
@@ -42,6 +46,19 @@ namespace Blog.Controllers
         {
             var applicationDbContext = _context.BlogPosts.Include(b => b.BlogItem);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> SearchIndex(int? pageNum, string searchTerm)
+        {
+            pageNum ??= 1;
+            var pageSize = 3;
+
+            var posts = _searchService.TermSearch(searchTerm);
+            var pagedPosts = await posts.ToPagedListAsync(pageNum, pageSize);
+
+            ViewData["SearchTerm"] = searchTerm;
+            return View(pagedPosts);
         }
 
         // GET: BlogPosts/Details/5

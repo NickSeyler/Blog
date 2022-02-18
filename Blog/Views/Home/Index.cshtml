@@ -21,7 +21,6 @@
         </div>
     </div>
 </header>
-
 <!-- Main Content-->
 <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -60,7 +59,7 @@
         @Html.PagedListPager(Model, pageNum => Url.Action("Index", new { pageNum }),
             new PagedListRenderOptions
             {
-                LiElementClasses = new string[] {"page Item"},
+                LiElementClasses = new string[] {"page-item"},
                 PageClasses = new string[] {"page-link"}
             })
     </div>

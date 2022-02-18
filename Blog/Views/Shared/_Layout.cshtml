@@ -38,7 +38,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="BlogPosts" asp-action="Index">Posts</a>
                         </li>
+                        <form asp-action="SearchIndex" asp-controller="BlogPosts">
+                            <div class="row">
+                                <div class="col-9">
+                                    <input name="SearchTerm" />
+                                </div>
+                                <div class="col-3">
+                                    <button class="btn btn-sm btn-warning btn-outline-dark">Search</button>
+                                </div>
+                            </div>
+                        </form>
                     </ul>
+
                     <partial name="_LoginPartial" />
                 </div>
             </div>

@@ -1,0 +1,38 @@
+﻿@using Blog.Services.Interfaces
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+
+@inject IImageService _imageService;
+
+@model IPagedList<BlogPost>
+
+<div class="row row-cols-1 row-cols-md-3 g-2">
+	@foreach(var blogPost in Model)
+	{
+	<div class="col">
+		<div class="card">
+			<img src="..." class="card-img-top" alt="...">
+			<div class="card-body">
+				<h5 class="card-title">@blogPost.Title</h5>
+				<p class="card-text">@blogPost.Abstract</p>
+			</div>
+			<div class="card-footer">
+				<h5 class="card-title">Created: @blogPost.Created</h5>
+				<a asp-action="Details" asp-controller="BlogPosts" asp-route-slug="@blogPost.Slug">Read More</a>
+			</div>
+		</div>
+	</div>
+	}
+</div>
+
+<div class="row">
+	<div class="col">
+        @Html.PagedListPager(Model, pageNum => Url.Action("SearchIndex", new { pageNum, searchTerm = ViewData["SearchTerm"] }),
+            new PagedListRenderOptions
+            {
+                LiElementClasses = new string[] {"page-item"},
+                PageClasses = new string[] {"page-link"}
+            })
+	</div>
+</div>
