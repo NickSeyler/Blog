@@ -10,7 +10,7 @@
 <h4>BlogPost</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -43,9 +43,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="Body" class="control-label"></label>
-                <textarea id="Body" name="Body" class="form-control"></textarea>
+                <textarea asp-for="Body" class="form-control"></textarea>
                 <span asp-validation-for="Body" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label class="control-label">Tags</label>
+                <select class="form-control" id="tagIds" name="tagIds" asp-items="ViewBag.TagIds" multiple></select>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

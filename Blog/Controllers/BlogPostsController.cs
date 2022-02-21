@@ -88,6 +88,7 @@ namespace Blog.Controllers
         public IActionResult Create()
         {
             ViewData["BlogItemId"] = new SelectList(_context.BlogItems, "Id", "BlogName");
+            ViewData["TagIds"] = new MultiSelectList(_context.Tags, "Id", "Text");
             return View();
         }
 
@@ -97,7 +98,7 @@ namespace Blog.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BlogItemId,Title,Abstract,BlogPostState,Body")] BlogPost blogPost)
+        public async Task<IActionResult> Create([Bind("BlogItemId,Title,Abstract,BlogPostState,Body")] BlogPost blogPost, List<int> tagIds)
         {
             if (ModelState.IsValid)
             {
@@ -111,16 +112,28 @@ namespace Blog.Controllers
                 {
                     ModelState.AddModelError("Title", "This Title cannot be used (duplicate Slug).");
                     ViewData["BlogItemId"] = new SelectList(_context.BlogItems, "Id", "BlogName", blogPost.BlogItemId);
+                    ViewData["TagIds"] = new MultiSelectList(_context.Tags, "Id", "Text", tagIds);
                     return View(blogPost);
                 }
 
+                if (tagIds.Count > 0)
+                {
+                    var tags = _context.Tags;
+                    foreach (var tagId in tagIds)
+                    {
+                        blogPost.Tags.Add(await tags.FindAsync(tagId));
+                    }
+                }
+
                 blogPost.Created = DateTime.UtcNow;
+
 
                 _context.Add(blogPost);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BlogItemId"] = new SelectList(_context.BlogItems, "Id", "BlogName", blogPost.BlogItemId);
+            ViewData["TagIds"] = new MultiSelectList(_context.Tags, "Id", "Text", tagIds);
             return View(blogPost);
         }
 
@@ -133,12 +146,18 @@ namespace Blog.Controllers
                 return NotFound();
             }
 
-            var blogPost = await _context.BlogPosts.FindAsync(id);
+            var blogPost = await _context.BlogPosts.Include("Tags")
+                                                   .FirstOrDefaultAsync(b => b.Id == id);
+
+            var tagIds = await blogPost.Tags.Select(b => b.Id).ToListAsync();
             if (blogPost == null)
             {
                 return NotFound();
             }
+
             ViewData["BlogItemId"] = new SelectList(_context.BlogItems, "Id", "BlogName", blogPost.BlogItemId);
+            ViewData["TagIds"] = new MultiSelectList(_context.Tags, "Id", "Text", tagIds);
+
             return View(blogPost);
         }
 
@@ -148,7 +167,7 @@ namespace Blog.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogItemId,Title,Slug,IsDeleted,Abstract,BlogPostState,Body,Created")] BlogPost blogPost)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogItemId,Title,Slug,IsDeleted,Abstract,BlogPostState,Body,Created")] BlogPost blogPost, List<int> tagIds)
         {
             if (id != blogPost.Id)
             {
@@ -171,6 +190,7 @@ namespace Blog.Controllers
                     {
                         ModelState.AddModelError("Title", "This Title cannot be used (duplicate Slug).");
                         ViewData["BlogItemId"] = new SelectList(_context.BlogItems, "Id", "BlogName", blogPost.BlogItemId);
+                        ViewData["TagIds"] = new MultiSelectList(_context.Tags, "Id", "Text", tagIds);
                         return View(blogPost);
                     }
 
@@ -178,6 +198,20 @@ namespace Blog.Controllers
                     blogPost.Updated = DateTime.UtcNow;
 
                     _context.Update(blogPost);
+                    await _context.SaveChangesAsync();
+
+                    var currentBlogPost = await _context.BlogPosts.Include("Tags")
+                                                                  .FirstOrDefaultAsync(b => b.Id == blogPost.Id);
+
+                    currentBlogPost.Tags.Clear();
+                    if (tagIds.Count > 0)
+                    {
+                        var tags = _context.Tags;
+                        foreach (var tagId in tagIds)
+                        {
+                            blogPost.Tags.Add(await tags.FindAsync(tagId));
+                        }
+                    }
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -194,6 +228,7 @@ namespace Blog.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BlogItemId"] = new SelectList(_context.BlogItems, "Id", "BlogName", blogPost.BlogItemId);
+            ViewData["TagIds"] = new MultiSelectList(_context.Tags, "Id", "Text", tagIds);
             return View(blogPost);
         }
 
