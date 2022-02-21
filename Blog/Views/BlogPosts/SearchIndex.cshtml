@@ -8,24 +8,37 @@
 @model IPagedList<BlogPost>
 
 <div class="row row-cols-1 row-cols-md-3 g-2">
-	@foreach(var blogPost in Model)
+	@if(ViewData["SearchTerm"] == null)
 	{
-	<div class="col">
-		<div class="card">
-			<img src="..." class="card-img-top" alt="...">
-			<div class="card-body">
-				<h5 class="card-title">@blogPost.Title</h5>
-				<p class="card-text">@blogPost.Abstract</p>
-			</div>
-			<div class="card-footer">
-				<h5 class="card-title">Created: @blogPost.Created</h5>
-				<a asp-action="Details" asp-controller="BlogPosts" asp-route-slug="@blogPost.Slug">Read More</a>
+		<span>You cannot search with an empty search term.</span>
+	}
+	else if(Model.TotalItemCount == 0)
+	{
+		<span>Sorry, we couldn't find any blog posts using the search term "@ViewData["SearchTerm"]."</span>
+	}
+	else
+	{
+		@foreach(var blogPost in Model)
+		{
+		<div class="col">
+			<div class="card">
+				<img src="..." class="card-img-top" alt="...">
+				<div class="card-body">
+					<h5 class="card-title">@blogPost.Title</h5>
+					<p class="card-text">@blogPost.Abstract</p>
+				</div>
+				<div class="card-footer">
+					<h5 class="card-title">Created: @blogPost.Created</h5>
+					<a asp-action="Details" asp-controller="BlogPosts" asp-route-slug="@blogPost.Slug">Read More</a>
+				</div>
 			</div>
 		</div>
-	</div>
+		}
 	}
 </div>
 
+@if(Model.TotalItemCount != 0 && ViewData["SearchTerm"] != null)
+{
 <div class="row">
 	<div class="col">
         @Html.PagedListPager(Model, pageNum => Url.Action("SearchIndex", new { pageNum, searchTerm = ViewData["SearchTerm"] }),
@@ -36,3 +49,4 @@
             })
 	</div>
 </div>
+}

@@ -42,6 +42,9 @@
                 <label class="control-label">Tags</label>
                 <select class="form-select" id="TagIds" name="TagIds" asp-items="@ViewBag.TagIds" multiple></select>
             </div>
+            <div>
+                <button type="button" class="btn btn-sm btn-warning w-50 fw-bold" data-bs-toggle="modal" data-bs-target="#addNewTag">Add New Tag</button>
+            </div>
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -52,6 +55,38 @@
 
 <div>
     <a asp-action="Index">Back to List</a>
+</div>
+
+<!--Modals-->
+<div class="modal fade" id="addNewTag" tabindex="-1" aria-labelledby="addNewTagLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNewTagLabel">Add New Tag</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+           
+                <form asp-action="Create" asp-controller="Tags">
+                    <div class="form-group m-2">
+                        <label class="form-label" for="text">Text</label>
+                        <input class="form-control" name="Text" id="Text"/>
+                    </div>
+                    <div class="form-group m-2">
+                        <label class="form-label" for="description">Description</label>
+                        <textarea class="form-control" name="Description" id="Description"></textarea>
+                    </div>
+                    <div class="form-group m-2">
+                        <button class="btn-primary">Add Tag</button>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
