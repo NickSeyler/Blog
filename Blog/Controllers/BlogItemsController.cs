@@ -32,24 +32,6 @@ namespace Blog.Controllers
             return View(await _context.BlogItems.ToListAsync());
         }
 
-        // GET: BlogItems/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var blogItem = await _context.BlogItems
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (blogItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(blogItem);
-        }
-
         // GET: BlogItems/Create
         [Authorize(Roles = "Administrator")]
         public IActionResult Create()
