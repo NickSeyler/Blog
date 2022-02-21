@@ -1,5 +1,8 @@
 ﻿@model Blog.Models.BlogItem
 
+@using Blog.Services.Interfaces
+@inject IImageService _imageService
+
 @{
     ViewData["Title"] = "Edit";
 }
@@ -10,11 +13,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="Created" />
-
 
             <div class="form-group">
                 <label asp-for="BlogName" class="control-label"></label>
@@ -25,6 +27,10 @@
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageData" class="control-label"></label>
+                <input type="file" name="ImageFile" class="form-control" src = @_imageService.ConvertByteArrayToFile(Model.ImageData, Model.ImageType)/>
             </div>
 
             <div class="form-group">

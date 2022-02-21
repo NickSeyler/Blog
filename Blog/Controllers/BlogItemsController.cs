@@ -57,7 +57,7 @@ namespace Blog.Controllers
             return View();
         }
 
-        // POST: BlogItems/Create
+        // POST: BlogItems/Create/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -82,7 +82,7 @@ namespace Blog.Controllers
             return View(blogItem);
         }
 
-        // GET: BlogItems/Edit/5
+        // GET: BlogItems/Edit
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -105,7 +105,7 @@ namespace Blog.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogName,Description,Created")] BlogItem blogItem)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogName,Description,Created")] BlogItem blogItem, IFormFile imageFile)
         {
             if (id != blogItem.Id)
             {
@@ -116,6 +116,12 @@ namespace Blog.Controllers
             {
                 try
                 {
+                    if (imageFile != null)
+                    {
+                        blogItem.ImageData = await _imageService.ConvertFileToByteArrayAsync(imageFile);
+                        blogItem.ImageType = imageFile.ContentType;
+                    }
+
                     blogItem.Created = DateTime.SpecifyKind(blogItem.Created, DateTimeKind.Utc);
                     blogItem.Updated = DateTime.UtcNow;
 

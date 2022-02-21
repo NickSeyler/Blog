@@ -1,8 +1,11 @@
 ﻿@using X.PagedList
 @using X.PagedList.Mvc.Core
 @using Blog.Models
+@using Blog.Services.Interfaces
 @using X.PagedList.Web.Common
+
 @model IPagedList<BlogItem>
+@inject IImageService _imageService
 
 @{
     ViewData["Title"] = "Nick Seyler's Blog Site";
@@ -28,15 +31,20 @@
             <!-- Post preview-->
 
             @foreach(var blog in Model)
-            {                
-                <div class="post-preview">
-                    <a asp-action="BlogChildIndex" asp-controller="BlogPosts" asp-route-blogId="@blog.Id">
-                        <h2 class="post-title">@blog.BlogName</h2>
-                        <h3 class="post-subtitle">@blog.Description</h3>
-                    </a>
-                    <p class="post-meta">
-                        Created By Nick Seyler on @blog.Created.ToString("MMM dd, yyyy")
-                    </p>
+            {
+                <div class="post-preview row">
+                    <div class="col col-4">
+                        <img class="img-fluid" src="@_imageService.ConvertByteArrayToFile(blog.ImageData, blog.ImageType)" />
+                    </div>
+                    <div class="col col-8">
+                        <a asp-action="BlogChildIndex" asp-controller="BlogPosts" asp-route-blogId="@blog.Id">
+                            <h2 class="post-title">@blog.BlogName</h2>
+                            <h3 class="post-subtitle">@blog.Description</h3>
+                        </a>
+                        <p class="post-meta">
+                            Created By Nick Seyler on @blog.Created.ToString("MMM dd, yyyy")
+                        </p>
+                    </div>
                 </div>
                 <!-- Divider-->
                 <hr class="my-4" />

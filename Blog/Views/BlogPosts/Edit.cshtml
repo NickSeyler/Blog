@@ -53,7 +53,7 @@
             </div>
 
             <div>
-                <button type="button" class="btn btn-sm btn-warning w-50 fw-bold" data-bs-toggle="modal" data-bs-target="#editTags">Edit Tags</button>
+                <button type="button" class="btn btn-sm btn-warning w-50 fw-bold" data-bs-toggle="modal" data-bs-target="#addNewTag">Add New Tag</button>
             </div>
 
             <div class="form-group">
@@ -67,17 +67,17 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-<!--Modals-->
-<div class="modal fade" id="editTags" tabindex="-1" aria-labelledby="editTagsLabel" aria-hidden="true">
+<!-- Modals -->
+<div class="modal fade" id="addNewTag" tabindex="-1" aria-labelledby="addNewTagLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editTagsLabel">Edit Tags</h5>
+                <h5 class="modal-title" id="addNewTagLabel">Add New Tag</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
            
-                @*<form asp-action="Edit" asp-controller="Tags">
+                <form asp-action="Create" asp-controller="Tags">
                     <div class="form-group m-2">
                         <label class="form-label" for="text">Text</label>
                         <input class="form-control" name="Text" id="Text"/>
@@ -87,9 +87,9 @@
                         <textarea class="form-control" name="Description" id="Description"></textarea>
                     </div>
                     <div class="form-group m-2">
-                        <button class="btn-primary">Edit Tag</button>
+                        <button class="btn-primary">Add Tag</button>
                     </div>
-                </form>*@
+                </form>
 
             </div>
             <div class="modal-footer">
@@ -98,7 +98,6 @@
         </div>
     </div>
 </div>
-
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
