@@ -38,7 +38,7 @@ namespace Blog.Controllers
             var children = await _context.BlogPosts.Include(b => b.BlogItem)
                                                    .Where(b => b.BlogItemId == blogItemId)
                                                    .ToListAsync();
-            return View("Index", children);
+            return View(children);
         }
 
         [Authorize(Roles = "Administrator")]
@@ -99,12 +99,19 @@ namespace Blog.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BlogItemId,Title,Abstract,BlogPostState,Body")] BlogPost blogPost, List<int> tagIds)
+        public async Task<IActionResult> Create([Bind("BlogItemId,Title,Abstract,BlogPostState,Body")] BlogPost blogPost, IFormFile imageFile, List<int> tagIds)
         {
             if (ModelState.IsValid)
             {
                 var slug = _slugService.UrlFriendly(blogPost.Title);
                 var isUnique = !_context.BlogPosts.Any(b => b.Slug == slug);
+
+                if (imageFile != null)
+                {
+                    blogPost.ImageData = await _imageService.ConvertFileToByteArrayAsync(imageFile);
+                    blogPost.ImageType = imageFile.ContentType;
+                }
+
                 if (isUnique)
                 {
                     blogPost.Slug = slug;

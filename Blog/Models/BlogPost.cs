@@ -34,6 +34,13 @@ namespace Blog.Models
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
 
+
+        //Image storage
+        [Display(Name = "Choose Image")]
+        public byte[] ImageData { get; set; } = Array.Empty<byte>();
+        public string ImageType { get; set; } = "";
+
+
         [Display(Name = "Blog")]
         //Navigation Properties
         public BlogItem? BlogItem { get; set; }
