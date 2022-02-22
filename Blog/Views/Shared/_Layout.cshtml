@@ -18,16 +18,19 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-md navbar-toggleable-md navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     Menu
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="collapse navbar-collapse justify-content-start" id="navbarResponsive">
-                    <ul class="navbar-nav ms-auto py-4 py-lg-0 flex-grow-1">
+                    <ul class="navbar-nav ms-auto py-4 py-md-0 flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                                <img src="~/img/NSDarkLogo.jpg" height="30" class="d-inline-block align-text-top px-2"/>
+                                Home
+                            </a>
                         </li>
 
                         @if (User.IsInRole("Administrator"))
@@ -41,10 +44,10 @@
                         }
                         <form asp-action="SearchIndex" asp-controller="BlogPosts">
                             <div class="row">
-                                <div class="col-9">
+                                <div class="col">
                                     <input name="SearchTerm" />
                                 </div>
-                                <div class="col-3">
+                                <div class="col">
                                     <button class="btn btn-sm btn-warning btn-outline-dark">Search</button>
                                 </div>
                             </div>
