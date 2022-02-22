@@ -10,14 +10,17 @@ namespace Blog.Services
         readonly ApplicationDbContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<BlogUser> _userManager;
+        private readonly IConfiguration _configuration;
 
         public DataService(ApplicationDbContext context, 
                            RoleManager<IdentityRole> roleManager,
-                           UserManager<BlogUser> userManager)
+                           UserManager<BlogUser> userManager,
+                           IConfiguration configuration)
         {
             _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         public async Task SetupDbAsync()
@@ -58,7 +61,7 @@ namespace Blog.Services
 
                 if (await _userManager.FindByEmailAsync(adminUser.Email) == null)
                 {
-                    await _userManager.CreateAsync(adminUser, "AdminBlogPassword1*");
+                    await _userManager.CreateAsync(adminUser, _configuration["DataService:AdminPassword"]);
                     await _userManager.AddToRoleAsync(adminUser, "Administrator");
                 }
             }
@@ -82,7 +85,7 @@ namespace Blog.Services
             {
                 if (await _userManager.FindByEmailAsync(modUser.Email) == null)
                 {
-                    await _userManager.CreateAsync(modUser, "ModBlogPassword1*");
+                    await _userManager.CreateAsync(modUser, _configuration["DataService:ModPassword"]);
                     await _userManager.AddToRoleAsync(modUser, "Moderator");
                 }
             }
