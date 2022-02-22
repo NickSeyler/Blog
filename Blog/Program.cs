@@ -3,10 +3,11 @@ using Blog.Models;
 using Blog.Services;
 using Blog.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-// Add services to the container.
+
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var connectionString = ConnectionService.GetConnectionString(builder.Configuration);
 
@@ -24,6 +25,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddTransient<DataService>();
 builder.Services.AddScoped<IImageService, BasicImageService>();
+builder.Services.AddTransient<IEmailSender, BasicEmailService>();
 builder.Services.AddTransient<SlugService>();
 builder.Services.AddTransient<SearchService>();
 
