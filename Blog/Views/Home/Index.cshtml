@@ -9,6 +9,7 @@
 
 @{
     ViewData["Title"] = "Nick Seyler's Blog Site";
+    var itemCount = 0;
 }
 
 <!-- Page Header-->
@@ -32,6 +33,8 @@
 
             @foreach(var blog in Model)
             {
+                itemCount++;
+
                 <div class="post-preview row">
                     <div class="col col-4">
                         <img class="img-fluid" src="@_imageService.ConvertByteArrayToFile(blog.ImageData, blog.ImageType)" />
@@ -46,19 +49,25 @@
                         </p>
                     </div>
                 </div>
-                <!-- Divider-->
-                <hr class="my-4" />
+
+                @if (Model.Count != itemCount || itemCount == 1)
+                {
+                    <!-- Divider-->
+                    <hr class="my-4" />
+                }
             }
 
             <!--Pager-->
-            <div class="row">
-                <div class="col h3">
-                    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @if (Model.PageCount > 1)
+            {
+                <div class="row">
+                    <div class="col h3">
+                        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+                    </div>
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col">
+                <div class="row">
+                    <div class="col">
                     @Html.PagedListPager(Model, pageNum => Url.Action("Index", new { pageNum }),
                         new PagedListRenderOptions
                         {
@@ -67,7 +76,7 @@
                         })
                 </div>
             </div>
-
+            }
         </div>
     </div>
 </div>

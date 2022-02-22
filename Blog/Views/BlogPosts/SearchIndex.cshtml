@@ -38,7 +38,7 @@ else
 </div>
 }
 
-@if(Model.TotalItemCount != 0 && ViewData["SearchTerm"] != null)
+@if(Model.PageCount > 1 && ViewData["SearchTerm"] != null)
 {
 <div class="row">
 	<div class="col">
