@@ -41,6 +41,7 @@ namespace Blog.Controllers
             return View("Index", children);
         }
 
+        [Authorize(Roles = "Administrator")]
         // GET: BlogPosts
         public async Task<IActionResult> Index()
         {

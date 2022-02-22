@@ -27,6 +27,7 @@ namespace Blog.Controllers
         }
 
         // GET: BlogItems
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.BlogItems.ToListAsync());
