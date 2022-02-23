@@ -1,9 +1,66 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using Blog.Enum
+@using Blog.Services.Interfaces
 
+@inject IImageService _imageService;
 
+@model IEnumerable<Blog.Models.BlogPost>
 
+@{
+    var count = 0;
+}
 
+<br />
 
-<p> aaaaaa </p>
+<div class="d-flex px-4 px-lg-5">
+    <a asp-controller="Home" asp-action="Index">
+        <h1>Back to Home</h1>
+    </a>
+</div>
+
+<br />
+
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+		@foreach (var post in Model) {
+			@if (post.BlogPostState == Blog.Enum.BlogPostState.ProductionReady)
+			{
+                count++;
+                <hr />
+				<div class="post-preview row my-2">
+                    @if (count % 2 == 0)
+                    {
+                    <div class="col col-4">
+                        <img class="img-fluid" src="@_imageService.ConvertByteArrayToFile(post.ImageData, post.ImageType)" />
+                    </div>
+                    <div class="col col-8 p-2">
+                        <a asp-action="Details" asp-route-slug="@post.Slug">
+                            <h2 class="post-title">@post.Title</h2>
+                            <h5 class="post-subtitle">@post.Abstract</h5>
+                        
+                            <p class="post-meta">
+                                Created By Nick Seyler on @post.Created.ToString("MMM dd, yyyy")
+                            </p>
+                        </a>
+                    </div>
+                    }
+                    else
+                    {
+                    <div class="col col-4 order-last">
+                        <img class="img-fluid" src="@_imageService.ConvertByteArrayToFile(post.ImageData, post.ImageType)" />
+                    </div>
+                    <div class="col col-8 p-2">
+                        <a asp-action="Details" asp-route-slug="@post.Slug">
+                            <h2 class="post-title">@post.Title</h2>
+                            <h5 class="post-subtitle">@post.Abstract</h5>
+
+                            <p class="post-meta">
+                                Created By Nick Seyler on @post.Created.ToString("MMM dd, yyyy")
+                            </p>
+                        </a>
+                    </div>
+                    }
+                </div>
+			}
+		}
+	</div>
+</div>

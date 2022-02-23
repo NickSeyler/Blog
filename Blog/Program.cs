@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var connectionString = ConnectionService.GetConnectionString(builder.Configuration);
 

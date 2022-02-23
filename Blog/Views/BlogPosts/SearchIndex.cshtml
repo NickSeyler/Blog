@@ -23,7 +23,7 @@ else
 	<a asp-action="Details" asp-controller="BlogPosts" asp-route-slug="@blogPost.Slug">
 		<div class="col">
 			<div class="card">
-				<img src="..." class="card-img-top" alt="...">
+				<img src="@_imageService.ConvertByteArrayToFile(blogPost.ImageData, blogPost.ImageType)" class="card-img-top" alt="...">
 				<div class="card-body">
 					<h5 class="card-title">@blogPost.Title</h5>
 					<p class="card-text">@blogPost.Abstract</p>

@@ -1,0 +1,23 @@
+﻿:root {
+    --ns-nav-color: #c6d0d7;
+    --ns-transition-color: #adbdc9;
+    --ns-light-color: #dde0e2;
+}
+
+body {
+    background: var(--ns-light-color);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, var(--ns-transition-color), var(--ns-light-color), var(--ns-light-color), var(--ns-light-color), var(--ns-light-color), var(--ns-transition-color));
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, var(--ns-transition-color), var(--ns-light-color), var(--ns-light-color), var(--ns-light-color), var(--ns-light-color), var(--ns-transition-color))
+}
+
+hr{
+    border-color: black !important;
+    background-color: black !important;
+    color: black !important;
+}
+
+nav{
+    background-color: var(--ns-nav-color);
+}
