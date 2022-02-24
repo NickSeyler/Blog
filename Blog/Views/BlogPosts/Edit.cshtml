@@ -1,6 +1,9 @@
 ﻿@using Blog.Enum
 @model Blog.Models.BlogPost
 
+@using Blog.Services.Interfaces
+@inject IImageService _imageService
+
 @{
     ViewData["Title"] = "Edit";
 }
