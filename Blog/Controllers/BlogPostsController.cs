@@ -175,7 +175,7 @@ namespace Blog.Controllers
         [HttpPost]
         [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogItemId,Title,Slug,IsDeleted,Abstract,BlogPostState,Body,Created")] BlogPost blogPost, List<int> tagIds)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogItemId,Title,Slug,IsDeleted,Abstract,BlogPostState,Body,Created")] BlogPost blogPost, IFormFile imageFile, List<int> tagIds)
         {
             if (id != blogPost.Id)
             {
@@ -186,6 +186,12 @@ namespace Blog.Controllers
             {
                 try
                 {
+                    if (imageFile != null)
+                    {
+                        blogPost.ImageData = await _imageService.ConvertFileToByteArrayAsync(imageFile);
+                        blogPost.ImageType = imageFile.ContentType;
+                    }
+
                     var slug = _slugService.UrlFriendly(blogPost.Title);
 
                     var isUnique = !_context.BlogPosts.Any(b => b.Slug == slug);
