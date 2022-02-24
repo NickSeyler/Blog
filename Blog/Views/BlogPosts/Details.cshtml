@@ -12,7 +12,7 @@
     ViewData["Title"] = Model.Title;
 }
 
-<a asp-action="BlogChildIndex" asp-controller="BlogPosts" asp-route-blogItemId="@Model.BlogItemId"><h1>Return to @Model.BlogItem?.BlogName</h1></a>
+<a asp-action="BlogChildIndex" asp-controller="BlogPosts" asp-route-blogItemId="@Model.BlogItemId"><h1><i class="fas fa-arrow-left"></i> Return to posts in @Model.BlogItem?.BlogName</h1></a>
 
 <!-- Page Header-->
 <div class="container position-relative px-4 px-lg-5">
