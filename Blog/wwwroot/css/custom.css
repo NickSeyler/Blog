@@ -1,5 +1,5 @@
 ﻿:root {
-    --ns-nav-color: #c6d0d7;
+    --ns-nav-color: #445968;
     --ns-transition-color: #adbdc9;
     --ns-light-color: #dde0e2;
 }
@@ -20,4 +20,9 @@ hr{
 
 nav{
     background-color: var(--ns-nav-color);
+}
+
+.logoutStyling {
+    background-color: transparent;
+    border: 1px solid transparent;
 }

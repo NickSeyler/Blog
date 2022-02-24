@@ -19,7 +19,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-md navbar-toggleable-md navbar-light border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-md navbar-toggleable-md navbar-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     Menu
@@ -28,19 +28,22 @@
                 <div class="collapse navbar-collapse justify-content-start" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto py-4 py-md-0 flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
-                                <img src="~/img/NSDarkLogo.jpg" height="30" class="d-inline-block align-text-top px-2"/>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">
+                                <img src="~/img/NSLightLogo.jpg" height="30" class="d-inline-block align-text-top px-2"/>
                                 Home
                             </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="https://nickseyler-portfolio.netlify.app/" target="_blank">About Me</a>
                         </li>
 
                         @if (User.IsInRole("Administrator"))
                         {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="BlogItems" asp-action="Index">Manage Blogs</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="BlogItems" asp-action="Index">Manage Blogs</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="BlogPosts" asp-action="Index">Manage Posts</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="BlogPosts" asp-action="Index">Manage Posts</a>
                         </li>
                         }
                         <form asp-action="SearchIndex" asp-controller="BlogPosts">
