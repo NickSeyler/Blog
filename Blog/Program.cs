@@ -5,6 +5,8 @@ using Blog.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -22,6 +24,31 @@ builder.Services.AddIdentity<BlogUser, IdentityRole>(options => options.SignIn.R
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSwaggerGen(s =>
+{
+    OpenApiInfo openApiInfo = new()
+    {
+        Title = "Atlas Blog API",
+        Version = "v1",
+        Description = "Candidate API for the Blog",
+        Contact = new()
+        {
+            Name = "Nick Seyler",
+            Url = new("https://nickseyler-portfolio.netlify.app/")
+        },
+        License = new()
+        {
+            Name = "API License",
+            Url = new("https://nickseyler-portfolio.netlify.app/")
+        }
+    };
+    s.SwaggerDoc(openApiInfo.Version, openApiInfo);
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    s.IncludeXmlComments(xmlPath);
+});
+
 builder.Services.AddTransient<DataService>();
 builder.Services.AddScoped<IImageService, BasicImageService>();
 builder.Services.AddTransient<IEmailSender, BasicEmailService>();
@@ -29,7 +56,6 @@ builder.Services.AddTransient<SlugService>();
 builder.Services.AddTransient<SearchService>();
 
 var app = builder.Build();
-
 
 //When calling a service from this middleware, we need an instance of IServiceScope
 var scope = app.Services.CreateScope();
@@ -57,6 +83,17 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSwagger();
+app.UseSwaggerUI(s =>
+{
+    s.SwaggerEndpoint("/swagger/v1/swagger.json", "Blog API");
+
+    if (!app.Environment.IsDevelopment())
+    {
+        s.RoutePrefix = "";
+    }
+});
 
 app.MapControllerRoute(
     name: "custom",
