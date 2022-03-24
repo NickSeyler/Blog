@@ -96,19 +96,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseSwagger();
-app.UseSwaggerUI(s =>
-{
-    s.SwaggerEndpoint("/swagger/v1/swagger.json", "Blog API");
-    s.InjectStylesheet("~/css/SwaggerUI.css");
-    s.InjectJavascript("~/js/SwaggerUI.js");
-
-    if (!app.Environment.IsDevelopment())
-    {
-        s.RoutePrefix = "";
-    }
-});
-
 app.MapControllerRoute(
     name: "custom",
     pattern: "PostDetails/{slug}",
@@ -117,6 +104,15 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseSwagger();
+app.UseSwaggerUI(s =>
+{
+    s.SwaggerEndpoint("/swagger/v1/swagger.json", "Blog API");
+    s.InjectStylesheet("~/css/SwaggerUI.css");
+    s.InjectJavascript("~/js/SwaggerUI.js");
+    s.DocumentTitle = "Blog API";
+});
 
 app.MapRazorPages();
 
