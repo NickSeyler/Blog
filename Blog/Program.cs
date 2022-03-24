@@ -45,11 +45,13 @@ builder.Services.AddSwaggerGen(s =>
             Name = "Nick Seyler",
             Url = new("https://nickseyler-portfolio.netlify.app/")
         },
+        /*
         License = new()
         {
             Name = "API License",
             Url = new("https://nickseyler-portfolio.netlify.app/")
         }
+        */
     };
     s.SwaggerDoc(openApiInfo.Version, openApiInfo);
 
