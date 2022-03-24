@@ -33,6 +33,7 @@ builder.Services.AddIdentity<BlogUser, IdentityRole>(options => options.SignIn.R
 
 builder.Services.AddControllersWithViews();
 
+/*
 builder.Services.AddSwaggerGen(s =>
 {
     OpenApiInfo openApiInfo = new()
@@ -45,13 +46,11 @@ builder.Services.AddSwaggerGen(s =>
             Name = "Nick Seyler",
             Url = new("https://nickseyler-portfolio.netlify.app/")
         },
-        /*
         License = new()
         {
             Name = "API License",
             Url = new("https://nickseyler-portfolio.netlify.app/")
         }
-        */
     };
     s.SwaggerDoc(openApiInfo.Version, openApiInfo);
 
@@ -59,6 +58,7 @@ builder.Services.AddSwaggerGen(s =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     s.IncludeXmlComments(xmlPath);
 });
+*/
 
 builder.Services.AddTransient<DataService>();
 builder.Services.AddScoped<IImageService, BasicImageService>();
@@ -105,6 +105,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+/*
 app.UseSwagger();
 app.UseSwaggerUI(s =>
 {
@@ -113,6 +114,7 @@ app.UseSwaggerUI(s =>
     s.InjectJavascript("~/js/SwaggerUI.js");
     s.DocumentTitle = "Blog API";
 });
+*/
 
 app.MapRazorPages();
 
