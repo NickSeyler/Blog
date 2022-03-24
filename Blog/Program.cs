@@ -15,6 +15,15 @@ var connectionString = ConnectionService.GetConnectionString(builder.Configurati
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+//CORS Policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DefaultCorsPolicy", builder =>
+        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+    );
+});
+
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<BlogUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -74,6 +83,7 @@ else
     app.UseHsts();
 }
 
+app.UseCors("DefaultCorsPolicy");
 
 
 app.UseHttpsRedirection();
