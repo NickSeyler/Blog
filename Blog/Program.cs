@@ -102,6 +102,11 @@ app.UseSwaggerUI(s =>
     s.SwaggerEndpoint("/swagger/v1/swagger.json", "Blog API");
     s.InjectStylesheet("~/css/SwaggerUI.css");
     s.InjectJavascript("~/js/SwaggerUI.js");
+
+    if (!app.Environment.IsDevelopment())
+    {
+        s.RoutePrefix = "";
+    }
 });
 
 app.MapControllerRoute(
