@@ -114,6 +114,7 @@ app.UseSwaggerUI(s =>
     s.InjectJavascript("~/js/SwaggerUI.js");
     s.DocumentTitle = "Blog API";
 });
+
 */
 
 app.MapRazorPages();
